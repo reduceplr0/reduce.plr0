@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>reduce.plr0.com</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+  }
+  #smile {
+    font-size: 60px;
+    user-select: none;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.1s linear;
+  }
+  .mouth {
+    position: absolute;
+    font-size: 60px;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+<div id="smile">:)</div>
+<script>
+const smile = document.getElementById('smile');
+let clicked = false;
+
+function duplicateMouth() {
+  const mouth = document.createElement('div');
+  mouth.className = 'mouth';
+  mouth.innerText = ')';
+  const rect = smile.getBoundingClientRect();
+  mouth.style.left = (rect.left + 40 + (Math.random()*20-10)) + 'px';
+  mouth.style.top = (rect.top + 5 + (Math.random()*20-10)) + 'px';
+  document.body.appendChild(mouth);
+  mouth.style.fontSize = (30 + Math.random()*40) + 'px';
+}
+
+document.body.addEventListener('click', ()=>{
+  if(clicked) return;
+  clicked = true;
+  const interval = setInterval(()=>{
+    duplicateMouth();
+  }, 100);
+  setTimeout(()=>{ clearInterval(interval); }, 120000); // 2 minutes
+});
+
+// Grow smile when cursor gets close
+document.addEventListener('mousemove', e => {
+  const rect = smile.getBoundingClientRect();
+  const dx = e.clientX - (rect.left + rect.width/2);
+  const dy = e.clientY - (rect.top + rect.height/2);
+  const distance = Math.sqrt(dx*dx + dy*dy);
+  const maxDistance = 200;
+  if(distance < maxDistance){
+    const scale = 1 + (maxDistance - distance)/100;
+    smile.style.transform = `scale(${scale})`;
+  } else {
+    smile.style.transform = `scale(1)`;
+  }
+});
+</script>
+</body>
+</html>
