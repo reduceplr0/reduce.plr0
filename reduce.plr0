@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>reduce.plr0.com</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+  }
+  #smile {
+    font-size: 60px;
+    user-select: none;
+    position: relative;
+    z-index: 1;
+  }
+  .mouth {
+    position: absolute;
+    font-size: 60px;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+<div id="smile">:)</div>
+<script>
+const smile = document.getElementById('smile');
+let clicked = false;
+let startTime = null;
+
+function growSmile(timestamp) {
+  if(!startTime) startTime = timestamp;
+  const elapsed = (timestamp - startTime)/1000; // seconds
+  const scale = 1 + elapsed/30; // grows gradually
+  smile.style.transform = `scale(${scale})`;
+
+  if(elapsed < 120){ // 2 minutes
+    requestAnimationFrame(growSmile);
+  } else {
+    window.close();
+  }
+}
+
+function duplicateMouth() {
+  const mouth = document.createElement('div');
+  mouth.className = 'mouth';
+  mouth.innerText = ')';
+  const rect = smile.getBoundingClientRect();
+  mouth.style.left = (rect.left + 40 + (Math.random()*20-10)) + 'px';
+  mouth.style.top = (rect.top + 5 + (Math.random()*20-10)) + 'px';
+  document.body.appendChild(mouth);
+  mouth.style.fontSize = (30 + Math.random()*40) + 'px';
+}
+
+document.body.addEventListener('click', ()=>{
+  if(clicked) return;
+  clicked = true;
+  requestAnimationFrame(growSmile);
+  const interval = setInterval(()=>{
+    duplicateMouth();
+  }, 100);
+  setTimeout(()=>{ clearInterval(interval); }, 120000); // stop after 2 minutes
+});
+</script>
+</body>
+</html>
